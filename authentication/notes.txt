@@ -1,0 +1,65 @@
+Authentication: 
+
+1. Hashing -> 
+
+What is Hashing?
+- Hashing is the process of converting data (like a password) into a fixed-size string of characters, 
+typically a hexadecimal number, using a hash function.
+
+- Hash functions are one-way functions, meaning that it’s computationally infeasible to reverse the 
+hash back to the original input.
+
+- Common Hashing Algorithms
+1.  SHA-256 (Secure Hash Algorithm): Commonly used for cryptographic purposes.
+2.  bcrypt: A hashing function specifically designed for password hashing. It incorporates a salt and 
+is slow by design to mitigate brute-force attacks.
+
+- Salting
+Salt is a random value added to the password before hashing. It ensures that the same passwords will 
+have different hashes, making precomputed attacks like rainbow tables ineffective.
+Each password should have a unique salt, which is stored alongside the hash.
+
+How to Implement Password Hashing?
+- Hash the Password:
+Generate a random salt.
+Hash the password combined with the salt using a hashing algorithm like bcrypt.
+Store both the hash and the salt in the database.
+
+- Verify the Password:
+Retrieve the hash and salt from the database.
+Combine the input password with the stored salt.
+Hash the combined value.
+Compare the resulting hash with the stored hash. If they match, the password is correct.
+
+code Snippet for hashing password 
+
+const bcrypt = require('bcrypt');
+
+const saltRounds = 10;
+
+// Hashing the password
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+};
+
+// Verifying the password
+const verifyPassword = async (password, hash) => {
+  const match = await bcrypt.compare(password, hash);
+  return match;
+};
+
+// Usage
+(async () => {
+  const password = 'mySecurePassword';
+  const hash = await hashPassword(password);
+  
+  console.log('Hashed password:', hash);
+
+  const isValid = await verifyPassword('mySecurePassword', hash);
+  console.log('Password is valid:', isValid);
+})();
+ ----------------------------------------*********----------------------------------------------
+
+ 
